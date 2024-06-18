@@ -13,6 +13,7 @@ class SystemInfo:
         self.disk = psutil.disk_usage('/')
         self.con = sqlite3.connect("database.db")
         self.cur = self.con.cursor()
+        self.InitDb()
 
     def CallInfo(self):
         print('Welcome to System Info')
@@ -27,14 +28,25 @@ class SystemInfo:
         print(f'Disk Free Space: {bytes2human(self.disk.free)}')
 
     def InitDb(self):
-        if os.path.exists("database.db"):
-            self.cur.execute("""
-                            INSERT INTO stats VALUES (23, 43.4, 23, 2)
-                            """)
-            self.con.commit()
-        else:
-            self.cur.execute("CREATE TABLE stats(count, fequency, load, memory, disk)")
+        self.cur.execute("""
+                         CREATE TABLE IF NOT EXISTS stats (
+                         count INTEGER,
+                         frequency REAL,
+                         load REAL,
+                         memory REAL,
+                         disk REAL
+                         )
+                    """)
+        self.con.commit()
+
+    def InsertStats(self):
+        self.cur.execute(
+            "INSERT INTO stats (count, frequency, load, memory, disk) values (?, ?, ?, ?, ?)",
+            (self.cpu_count, self.cpu_freq.current, self.cpu_load[0], self.memory.percent, self.disk.free)
+        )
+        self.con.commit()
+
 
 SysInstance = SystemInfo()
 SysInstance.CallInfo()
-SysInstance.InitDb()
+SysInstance.InsertStats()
