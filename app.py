@@ -1,23 +1,27 @@
 import psutil
 from psutil._common import bytes2human
 import math
+import sqlite3
 
-def CallInfo():
-    cpu_count = psutil.cpu_count()
-    cpu_freq = psutil.cpu_freq()
-    cpu_load = psutil.getloadavg()
-    memory = psutil.virtual_memory()
-    disk = psutil.disk_usage('/')
+class SystemInfo:
+    def __init__(self) -> None:
+        self.cpu_count = psutil.cpu_count()
+        self.cpu_freq = psutil.cpu_freq()
+        self.cpu_load = psutil.getloadavg()
+        self.memory = psutil.virtual_memory()
+        self.disk = psutil.disk_usage('/')
 
-    print('Welcome to System Info')
-    print('======================')
+    def CallInfo(self):
+        print('Welcome to System Info')
+        print('======================')
 
-    print(f'CPU Cores: {cpu_count}')
-    print(f'CPU Frequency: {math.trunc(cpu_freq[0])} Hz')
-    print(f'CPU Load: {math.trunc(cpu_load[0] / cpu_count * 100)}%')
+        print(f'CPU Cores: {self.cpu_count}')
+        print(f'CPU Frequency: {math.trunc(self.cpu_freq.current)} Hz')
+        print(f'CPU Load: {math.trunc(self.cpu_load[0] / self.cpu_count * 100)}%')
 
-    print(f'Memory: {math.trunc(memory[2])}%')
+        print(f'Memory: {self.memory.percent}%')
+    
+        print(f'Disk Free Space: {bytes2human(self.disk.free)}')
 
-    print(f'Disk Free Space: {bytes2human(disk[2])}')
-
-CallInfo()
+SysInstance = SystemInfo()
+SysInstance.CallInfo()
