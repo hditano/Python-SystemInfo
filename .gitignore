@@ -141,9 +141,9 @@ venv.bak/
 /site
 
 #bin
-/bin
+bin/
 
-/lib64
+lib64
 
 # mypy
 .mypy_cache/
