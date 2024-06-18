@@ -2,6 +2,7 @@ import psutil
 from psutil._common import bytes2human
 import math
 import sqlite3
+import os
 
 class SystemInfo:
     def __init__(self) -> None:
@@ -10,6 +11,8 @@ class SystemInfo:
         self.cpu_load = psutil.getloadavg()
         self.memory = psutil.virtual_memory()
         self.disk = psutil.disk_usage('/')
+        self.con = sqlite3.connect("database.db")
+        self.cur = self.con.cursor()
 
     def CallInfo(self):
         print('Welcome to System Info')
@@ -23,5 +26,15 @@ class SystemInfo:
     
         print(f'Disk Free Space: {bytes2human(self.disk.free)}')
 
+    def InitDb(self):
+        if os.path.exists("database.db"):
+            self.cur.execute("""
+                            INSERT INTO stats VALUES (23, 43.4, 23, 2)
+                            """)
+            self.con.commit()
+        else:
+            self.cur.execute("CREATE TABLE stats(count, fequency, load, memory, disk)")
+
 SysInstance = SystemInfo()
 SysInstance.CallInfo()
+SysInstance.InitDb()
