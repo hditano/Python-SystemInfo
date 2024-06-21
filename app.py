@@ -43,22 +43,23 @@ class SystemInfo:
             case '2':
                 self.GetStats()
             case '3':
-                self.DrawPlot()
+                self.DrawPlot(self.GetStats())
             case _:
                 print('none')
                 
 
-    def DrawPlot(self):
-        plt.xlabel('Time Past')
+    def DrawPlot(self, data):
+        plt.xlabel('# Data Recorded')
         plt.ylabel('Hz')
         
-        data_hz = [1400, 1800, 3200, 900]
-        
-        plt.plot(data_hz)
+        data_hz = data
+        data_time = list(range(1, len(data) + 1))
+
+        plt.plot(data_time, data_hz)
 
         plt.canvas_color('black')
         plt.axes_color('gray+')
-        plt.title("Sclatter Plot")
+        plt.title("CPU Frequency")
         plt.show()
 
     def InitDb(self):
@@ -82,7 +83,9 @@ class SystemInfo:
 
     def GetStats(self):
         x = self.cur.execute("SELECT frequency FROM stats")
-        print((x.fetchall()))
+        res = x.fetchall()
+        res_list = [item[0] for item in res]
+        return res_list
 
 
 SysInstance = SystemInfo()
